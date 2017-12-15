@@ -1,5 +1,5 @@
 
-def get_user(email):
+def get_user_from_db(email):
     """
     :param email:
     :return: if the user with the email exists in the database, return the user.

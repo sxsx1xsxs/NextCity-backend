@@ -17,7 +17,7 @@ def hello_world():
 def get_user():
     email = request.args['email']
     name = request.args['name']
-    user = get_user(email, name)
+    user = get_user_from_db(email)
 
     if user is None:
         user = User(email, name)
