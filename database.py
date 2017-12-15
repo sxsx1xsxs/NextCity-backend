@@ -4,7 +4,7 @@ from users import *
 class Database:
     @staticmethod
     def get_user(email):
-        return User("dummy_email", "dummy_name")
+        return User(email, "dummy_name")
 
     @staticmethod
     def store_user(user):
