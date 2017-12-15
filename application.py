@@ -19,7 +19,7 @@ def hello_world():
 def login_user():
     email = request.args['email']
     name = request.args['name']
-    user = get_user(email)
+    user = get_user_from_db(email)
 
     if user is None:
         user = User(email, name)
@@ -28,7 +28,7 @@ def login_user():
     # return json.dumps(user, default=lambda o: o.__dict__)
     return json.dumps({"preferences": ["Crime", "Traffic", "Climate", "Education"], "name": "Naruhodou",
                        "otherPref": ["Cost of Living", "Cuisine", "Pollution", "Female Male Ratio", "Health Care"],
-                       "address": "New York", "skill": ["Big data", "Cloud Computing", "Scala", "Database"]})
+                       "address": "Los Santos", "skill": ["Big data", "Cloud Computing", "Scala", "Database"]})
 
 
 @application.route('/save_user', methods=['POST'])
