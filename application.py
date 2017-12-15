@@ -5,6 +5,11 @@ import json
 from database import *
 from collections import namedtuple
 
+
+
+##root url: http://environment.efqyc3f3mv.us-east-1.elasticbeanstalk.com
+
+
 application = Flask(__name__)
 
 
