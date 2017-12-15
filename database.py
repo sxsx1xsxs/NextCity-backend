@@ -1,5 +1,5 @@
 
-def get_user(email):
+def get_user_from_db(email):
     """
     :param email:
     :return: if the user with the email exists in the database, return the user.
@@ -29,18 +29,19 @@ def get_city(city_name):
 def search_city_by_preferences(preferences, size):
     """
     :param preferences: String[]
-    :return:
+    :param size: int
+    :return: City[]
     """
     from job import Job
-    job1 = Job("job1")
-    job2 = Job("job2")
-    jobs = [job1, job2]
-    return jobs
+    city1 = Job("city1")
+    city2 = Job("city2")
+    cities = [city1, city2]
+    return cities
 
 
-def search_job_by_city(city, size):
+def search_job_by_city(city_name, size):
     """
-    :param cities: String[]
+    :param city_name: String
     :param size: int
     :return: Job[]
     """
