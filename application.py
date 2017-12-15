@@ -15,7 +15,7 @@ def hello_world():
 @application.route('/login')
 def login():
     email = request.args['email']
-    user = Database.get_user(email)
+    user = get_user(email)
     return json.dumps(user, default=lambda o: o.__dict__)
 
 
