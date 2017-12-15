@@ -4,8 +4,10 @@ from users import *
 import json
 from database import *
 from collections import namedtuple
+from flask_cors import CORS
 
 application = Flask(__name__)
+CORS(application)
 
 
 @application.route('/')
@@ -14,16 +16,19 @@ def hello_world():
 
 
 @application.route('/get_user')
-def get_user():
+def login_user():
     email = request.args['email']
     name = request.args['name']
-    user = get_user(email, name)
+    user = get_user(email)
 
     if user is None:
         user = User(email, name)
         store_user(user)
 
-    return json.dumps(user, default=lambda o: o.__dict__)
+    # return json.dumps(user, default=lambda o: o.__dict__)
+    return json.dumps({"preferences": ["Crime", "Traffic", "Climate", "Education"], "name": "Naruhodou",
+                       "otherPref": ["Cost of Living", "Cuisine", "Pollution", "Female Male Ratio", "Health Care"],
+                       "address": "New York", "skill": ["Big data", "Cloud Computing", "Scala", "Database"]})
 
 
 @application.route('/save_user', methods=['POST'])
@@ -38,7 +43,10 @@ def save_user():
 def fun_get_city():
     city_name = request.args['city_name']
     city = get_city(city_name)
-    return json.dumps(city, default=lambda o: o.__dict__)
+    res = {"name": "Chicago", "cuisine": 70, "health_care": 80, "pollution": 90, "climate": 76, "cost_of_living": 92,
+           "crime": 92, "traffic": 76, "female_ratio": 42, "education": 55}
+    # return json.dumps(city, default=lambda o: o.__dict__)
+    return json.dumps(res)
 
 
 @application.route('/get_city_list_by_preference')
@@ -73,4 +81,3 @@ if __name__ == "__main__":
     # removed before deploying a production app.
     application.debug = True
     application.run()
-
