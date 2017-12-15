@@ -1,24 +1,12 @@
 class Job:
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
+        self.city = ""
+        self.company = ""
+        self.salary = ""
+        self.url = ""
 
+        #and other attributes
 
-    def searchJobByCities(self, cities, size):
-        """
-        :param cities: String[]
-        :param size: int
-        :return: Job[]
-        """
+        return
 
-    def searchJobBySkills(self, skills, size):
-        """
-        :param skills: String[]
-        :param size: int
-        :return: Job[]
-        """
-
-    def searchJobByKeywords(self, keywords, size):
-        """
-        :param keywords: String[]
-        :param size: int
-        :return: Job[]
-        """

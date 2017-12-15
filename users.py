@@ -10,19 +10,19 @@ class User:
         self.favoriteJobs = ["f1"]
         self.favoriteCities = ["fc1"]
 
-    def set_preference(self, preferences):
-        """
-        :param preferences: String[]
-        """
-        self.preferences = preferences
-        Database.store_user(self)
-
-    def set_skills(self, skills):
-        """
-        :param skills: String[]
-        """
-        self.skills = skills
-        Database.store_user(self)
+    # def set_preference(self, preferences):
+    #     """
+    #     :param preferences: String[]
+    #     """
+    #     self.preferences = preferences
+    #     store_user(self)
+    #
+    # def set_skills(self, skills):
+    #     """
+    #     :param skills: String[]
+    #     """
+    #     self.skills = skills
+    #     store_user(self)
 
 
 
