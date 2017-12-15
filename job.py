@@ -1,6 +1,7 @@
 class Job:
     def __init__(self):
 
+
     def searchJobByCities(self, cities, size):
         """
         :param cities: String[]
