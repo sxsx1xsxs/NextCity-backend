@@ -1,5 +1,5 @@
 import pymysql
-
+import json
 
 def db_conn(): #ZJ
     return pymysql.connect(host="cc-nextcity.c3roxefgeyor.us-west-2.rds.amazonaws.com",
@@ -70,9 +70,10 @@ def get_user_from_db(email):  # YKM
         for field in ["skill", "other_pref", "main_pref"]:
             tmp = list(user[field].strip().split(','))
             user[field] = list(map(lambda x: x.strip(), tmp))
+        db.close()
     except:
         print('Error: unable to fetch data')
-    db.close()
+        db.close()
     return user
 
 
@@ -92,8 +93,8 @@ def store_user(user): # QYY
         return True
     except:
         print("Error: unable to store data")
-    db.close()
-    return False
+        db.close()
+        return False
 
 def get_city(city_name): # ZJ
     # from city import City
@@ -109,11 +110,10 @@ def get_city(city_name): # ZJ
         row = results[0]
         for i in range(len(row)):
             city[fields_name[i]] = row[i] if not row[i] == None else 0
-        # for row in results:
-        #
+        db.close()
     except:
         print('Error: unable to fetch data')
-    db.close()
+        db.close()
     return city
 
 
@@ -135,7 +135,7 @@ def search_city_by_preferences(preferences, size):
     return [city1, city2]
 
 
-def search_job_by_city(city_name, size): #QYY
+def search_job_by_city(city_name, size = 100): #QYY
     """
     :param city_name: String
     :param size: int
@@ -145,7 +145,7 @@ def search_job_by_city(city_name, size): #QYY
     # job1 = Job("job1")
     # job2 = Job("job2")
     # jobs = [job1, job2]
-    size = 100
+    # size = 100
     result = []
     db = db_conqyy()
     cursor = db.cursor()
@@ -161,46 +161,63 @@ def search_job_by_city(city_name, size): #QYY
         print("Error: unable to fetch data")
         db.close()
 
-
-
-
 def search_job_by_skills(skills, size):
     """
     :param skills: String[]
     :param size: int
     :return: [dict]
     """
-    job1 = {}
-    job2 = {}
+    result = []
+    db = db_conqyy()
+    cursor = db.cursor()
+    sql = "select * from job where skill LIKE (%s)"
+    for skill in skills:
+        try:
+            cursor.execute(sql, skill)
+            jobs = cursor.fetchall()
+            for job in jobs:
+                result.append(job)
+        except:
+            print("Error: unable to fetch data")
+            db.close()
+    db.close()
+    return result[:size]
 
-    job1['name'] = 'name'  # modify this line
-    return [job1, job2]
 
-
-def search_job_by_keywords(keywords, size): #QYY
+def search_job_by_keywords(keywords, size):
     """
     :param keywords: String[]
     :param size: int
     :return: [dict]
     """
-    job1 = {}
-    job2 = {}
-    # sql = "select * from job where title like "
+    result = []
+    db = db_conqyy()
+    cursor = db.cursor()
+    sql = "select * from job WHERE match(title, city, company, state, skill, description) against (%s in BOOLEAN MODE )"
+    keyword_boolean = ""
     for keyword in keywords:
-        sql = sql + ""
+        keyword_boolean += '+' + keyword + ' '
+    try:
+        cursor.execute(sql, keyword_boolean)
+        jobs = cursor.fetchall()
+        for job in jobs:
+            result.append(job)
+        db.close()
+    except:
+        print("Error: unable to fetch data")
+        db.close()
+    return result[:size]
 
-    job1['name'] = 'name'  # modify this line
-    return [job1, job2]
 
 # Test
 def main():
-    get_city('Akron')
+    print(search_job_by_keywords(['dallas', 'data'], 5))
     
 if __name__ == '__main__':
-    # main()
+    main()
     # print(get_user_from_db("Alonzo.Ball@gmail.com"))
 
     # user = {"name": "qyy", "skill": "a,b,c", "main_pref": "e,g,h", "other_pref": "sf,d", "email": "KLJF", "password": "safe", "address": "203"}
     # print(store_user(user))
 
-    print(search_job_by_city("Dallas", 100))
+
