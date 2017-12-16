@@ -246,7 +246,7 @@ def search_job_by_keywords(keywords, size): #ZJ
 # Test
 def main():
     print(search_job_by_keywords(['dallas', 'data'], 5))
-    
+
 if __name__ == '__main__':
     main()
     # print(get_user_from_db("Alonzo.Ball@gmail.com"))
