@@ -188,7 +188,7 @@ def search_job_by_skills(skills, size):
     return result[:size]
 
 
-def search_job_by_keywords(keywords, size):
+def search_job_by_keywords(keywords, size): #ZJ
     """
     :param keywords: String[]
     :param size: int
@@ -211,6 +211,36 @@ def search_job_by_keywords(keywords, size):
         print("Error: unable to fetch data")
         db.close()
     return result[:size]
+
+def search_job_by_keywords(keywords, size): #QYY
+    """
+    :param keywords: String[]
+    :param size: int
+    :return: [dict]
+    """
+    db  = db_conqyy()
+    cursor = db.cursor()
+    sql = "select * from job where "
+    # target elements in the format (title like "%keyword%")
+    target = []
+    for word in keywords:
+        subsql = "title like " + "'%" + word + "%'"
+        print(subsql)
+        target.append(subsql)
+    s = " or "
+    secondpart = s.join(target)
+    # print(secondpart)
+    result = sql + secondpart
+    # print(result)
+    try:
+        cursor.execute(result)
+        rows = cursor.fetchmany(size)
+        db.close()
+        # print(len(rows))
+        return rows
+    except:
+        print("Error: unable to fetch data")
+    db.close()
 
 
 # Test
