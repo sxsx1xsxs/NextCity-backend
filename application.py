@@ -44,10 +44,8 @@ def save_user():
 def fun_get_city():
     city_name = request.args['city_name']
     city = get_city(city_name)
-    res = {"name": "Chicago", "cuisine": 70, "health_care": 80, "pollution": 90, "climate": 76, "cost_of_living": 92,
-           "crime": 92, "traffic": 76, "female_ratio": 42, "education": 55}
     # return json.dumps(city, default=lambda o: o.__dict__)
-    return json.dumps(res)
+    return json.dumps(city)
 
 
 @application.route('/get_city_list_by_preference')
