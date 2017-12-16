@@ -123,16 +123,20 @@ def search_city_by_preferences(preferences, size):
     :param size: int
     :return: [dict]
     """
-    city1 = {}
-    city2 = {}
-
-    city1['name'] = 'name' # modify this line
-    # from job import Job
-    # city1 = Job("city1")
-    # city2 = Job("city2")
-    # cities = [city1, city2]
-
-    return [city1, city2]
+    result = []
+    db = db_conqyy()
+    cursor = db.cursor()
+    sql = "select * from city order by %s"
+    try:
+        cursor.execute(sql, ','.join(preferences))
+        cities = cursor.fetchall()
+        for city in cities:
+            result.append(city)
+        db.close()
+        return result[:size]
+    except:
+        print("Error: unable to fetch data")
+        db.close()
 
 
 def search_job_by_city(city_name, size = 100): #QYY

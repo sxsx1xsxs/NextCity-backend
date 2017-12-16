@@ -27,9 +27,7 @@ def login_user():
         store_user(user)
 
     # return json.dumps(user, default=lambda o: o.__dict__)
-    return json.dumps({"preferences": ["Crime", "Traffic", "Climate", "Education"], "name": "Naruhodou",
-                       "otherPref": ["Cost of Living", "Cuisine", "Pollution", "Female Male Ratio", "Health Care"],
-                       "address": "Los Santos", "skill": ["Big data", "Cloud Computing", "Scala", "Database"]})
+    return json.dumps(user)
 
 
 @application.route('/save_user', methods=['POST'])
@@ -52,27 +50,32 @@ def fun_get_city():
 def fun_get_city_list():
     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
     search_size = request.args['search_size']
+
     preferences = user.preferences
     city_list = search_city_by_preferences(preferences, search_size)
-    return json.dumps(city_list, default=lambda o: o.__dict__)
-
+    # return json.dumps(city_list, default=lambda o: o.__dict__)
+    return json.dumps(city_list)
 
 @application.route('/search_job_by_skills')
 def fun_get_job_list_by_skills():
     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+    import re
+    EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+    if not EMAIL_REGEX.match(user):
+        return "Error: wrong format of user email"
     search_size = request.args['search_size']
-    skills = user.skills
+    skills = get_user_from_db(email=user)['skill']
     jobs = search_job_by_skills(skills, search_size)
-    return json.dumps(jobs, default=lambda o: o.__dict__)
-
+    # return json.dumps(jobs, default=lambda o: o.__dict__)
+    return json.dumps(jobs)
 
 @application.route('/search_job_by_city')
 def fun_get_job_list_by_city():
     city_name = request.args['city_name']
     search_size = request.args['search_size']
     jobs = search_job_by_city(city_name, search_size)
-    return json.dumps(jobs, default=lambda o: o.__dict__)
-
+    # return json.dumps(jobs, default=lambda o: o.__dict__)
+    return json.dumps(jobs)
 
 # run the app.
 if __name__ == "__main__":
