@@ -46,7 +46,11 @@ def fun_get_city():
     # return json.dumps(city, default=lambda o: o.__dict__)
     return json.dumps(city)
 
-
+'''
+sample url: http://127.0.0.1:5000/get_city_list_by_preference?email=Alonzo.Ball@gmail.com&list_size=100
+sample output: ["Oakland", "New York", "Honolulu", "Berkeley", "Queens", "San Francisco", "San Francisco", "Los Angeles", "New York" ...]
+there are duplicated in output
+'''
 @application.route('/get_city_list_by_preference')
 def fun_get_city_list():
     # user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
@@ -62,7 +66,9 @@ def fun_get_city_list():
     other_users = logic.get_total_similarity(user, other_users)
     # city_list = search_city_by_preferences(preferences, search_size)
     # return json.dumps(city_list, default=lambda o: o.__dict__)
-    return json.dumps(other_users)
+    cities = [other_user['address'] for other_user in other_users]
+
+    return json.dumps(cities)
 
 @application.route('/get_all_jobs')
 def fun_get_all_jobs():
