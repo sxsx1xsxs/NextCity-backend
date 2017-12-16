@@ -50,7 +50,7 @@ def get_city(city_name): # Yiyang
         results = cursor.fetchall()
         row = results[0]
         for i in range(len(row)):
-            city[fields_name[i]] = row[i]
+            city[fields_name[i]] = row[i] if not row[i] == None else 0
         # for row in results:
         #
     except:
@@ -121,7 +121,7 @@ def search_job_by_keywords(keywords, size):
 
 # Test
 def main():
-    get_city('New York')
+    get_city('Akron')
     
 if __name__ == '__main__':
     main()
