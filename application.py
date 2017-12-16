@@ -25,8 +25,6 @@ def login_user():
         user['email'] = email
         user['name'] = name
         store_user(user)
-
-    # return json.dumps(user, default=lambda o: o.__dict__)
     return json.dumps(user)
 
 
@@ -56,6 +54,7 @@ def fun_get_city_list():
     # return json.dumps(city_list, default=lambda o: o.__dict__)
     return json.dumps(city_list)
 
+
 @application.route('/search_job_by_skills')
 def fun_get_job_list_by_skills():
     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
@@ -69,6 +68,7 @@ def fun_get_job_list_by_skills():
     # return json.dumps(jobs, default=lambda o: o.__dict__)
     return json.dumps(jobs)
 
+
 @application.route('/search_job_by_city')
 def fun_get_job_list_by_city():
     city_name = request.args['city_name']
@@ -76,6 +76,7 @@ def fun_get_job_list_by_city():
     jobs = search_job_by_city(city_name, search_size)
     # return json.dumps(jobs, default=lambda o: o.__dict__)
     return json.dumps(jobs)
+
 
 # run the app.
 if __name__ == "__main__":
