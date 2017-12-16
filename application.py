@@ -31,7 +31,6 @@ def login_user():
         store_user(user)
     return json.dumps(user)
 
-
 @application.route('/save_user', methods=['POST'])
 def save_user():
     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
@@ -60,6 +59,11 @@ def fun_get_city_list():
     # return json.dumps(city_list, default=lambda o: o.__dict__)
     return json.dumps(city_list)
 
+@application.route('/get_all_jobs')
+def fun_get_all_jobs():
+    # size = json.loads(request.args['size'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+    # jobs = get_all_jobs(size=size) if not size is None else get_all_jobs()
+    return json.dumps(get_all_jobs())
 
 @application.route('/search_job_by_skills')
 def fun_get_job_list_by_skills():

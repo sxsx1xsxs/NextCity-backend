@@ -72,7 +72,7 @@ def get_user_from_db(email):  # YKM
             user[field] = list(map(lambda x: x.strip(), tmp))
         db.close()
     except:
-        print('Error: unable to fetch data')
+        return 'Error: unable to fetch data'
         db.close()
     return user
 
@@ -92,7 +92,7 @@ def store_user(user): # QYY
         db.close()
         return True
     except:
-        print("Error: unable to store data")
+        return "Error: unable to store data"
         db.close()
         return False
 
@@ -112,7 +112,7 @@ def get_city(city_name): # ZJ
             city[fields_name[i]] = row[i] if not row[i] == None else 0
         db.close()
     except:
-        print('Error: unable to fetch data')
+        return 'Error: unable to fetch data'
         db.close()
     return city
 
@@ -135,7 +135,23 @@ def search_city_by_preferences(preferences, size):
         db.close()
         return result[:size]
     except:
-        print("Error: unable to fetch data")
+        return "Error: unable to fetch data"
+        db.close()
+
+def get_all_jobs(size=100):
+    result = []
+    db = db_conqyy()
+    cursor = db.cursor()
+    sql = "select * from job"
+    try:
+        cursor.execute(sql)
+        jobs = cursor.fetchall()
+        for job in jobs:
+            result.append(job)
+        db.close()
+        return result[:size]
+    except:
+        return "Error: unable to fetch data"
         db.close()
 
 
@@ -165,7 +181,7 @@ def search_job_by_city(city_name, size = 100): #QYY
         print("Error: unable to fetch data")
         db.close()
 
-def search_job_by_skills(skills, size):
+def search_job_by_skills(skills, size=100):
     """
     :param skills: String[]
     :param size: int
@@ -188,7 +204,7 @@ def search_job_by_skills(skills, size):
     return result[:size]
 
 
-def search_job_by_keywords(keywords, size): #ZJ
+def search_job_by_keywords(keywords, size=100): #ZJ
     """
     :param keywords: String[]
     :param size: int
@@ -212,40 +228,9 @@ def search_job_by_keywords(keywords, size): #ZJ
         db.close()
     return result[:size]
 
-# def search_job_by_keywords(keywords, size): #QYY
-#     """
-#     :param keywords: String[]
-#     :param size: int
-#     :return: [dict]
-#     """
-#     db  = db_conqyy()
-#     cursor = db.cursor()
-#     sql = "select * from job where "
-#     # target elements in the format (title like "%keyword%")
-#     target = []
-#     for word in keywords:
-#         subsql = "title like " + "'%" + word + "%'"
-#         print(subsql)
-#         target.append(subsql)
-#     s = " or "
-#     secondpart = s.join(target)
-#     # print(secondpart)
-#     result = sql + secondpart
-#     # print(result)
-#     try:
-#         cursor.execute(result)
-#         rows = cursor.fetchmany(size)
-#         db.close()
-#         # print(len(rows))
-#         return rows
-#     except:
-#         print("Error: unable to fetch data")
-#     db.close()
-
-
 # Test
 def main():
-    print(search_job_by_keywords(['dallas', 'data'], 5))
+    print(get_all_jobs(None))
 
 if __name__ == '__main__':
     main()
