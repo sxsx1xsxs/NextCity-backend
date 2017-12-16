@@ -1,7 +1,7 @@
 def get_total_similarity(a, b):
     key = "name"
     compare1 = "skill"
-    compare2 = "main_pref"
+    compare2 = "pref"
 
     res = {}
     for item in b:
