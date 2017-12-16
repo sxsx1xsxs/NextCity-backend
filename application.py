@@ -49,15 +49,20 @@ def fun_get_city():
 
 @application.route('/get_city_list_by_preference')
 def fun_get_city_list():
-    user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-    if not EMAIL_REGEX.match(user):
+    # user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+    email = request.args['email']
+    # print(user)
+    if not EMAIL_REGEX.match(email):
         return "Error: wrong format of user email"
-    search_size = request.args['search_size']
+    list_size = request.args['list_size']
 
-    preferences = user.preferences
-    city_list = search_city_by_preferences(preferences, search_size)
+    user = get_user_from_db(email)
+    other_users = get_user_except(email=email)
+    import logic
+    other_users = logic.get_total_similarity(user, other_users)
+    # city_list = search_city_by_preferences(preferences, search_size)
     # return json.dumps(city_list, default=lambda o: o.__dict__)
-    return json.dumps(city_list)
+    return json.dumps(other_users)
 
 @application.route('/get_all_jobs')
 def fun_get_all_jobs():
@@ -65,16 +70,16 @@ def fun_get_all_jobs():
     # jobs = get_all_jobs(size=size) if not size is None else get_all_jobs()
     return json.dumps(get_all_jobs())
 
-@application.route('/search_job_by_skills')
-def fun_get_job_list_by_skills():
-    user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-    if not EMAIL_REGEX.match(user):
-        return "Error: wrong format of user email"
-    search_size = request.args['search_size']
-    skills = get_user_from_db(email=user)['skill']
-    jobs = search_job_by_skills(skills, search_size)
-    # return json.dumps(jobs, default=lambda o: o.__dict__)
-    return json.dumps(jobs)
+# @application.route('/search_job_by_skills')
+# def fun_get_job_list_by_skills():
+#     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+#     if not EMAIL_REGEX.match(user):
+#         return "Error: wrong format of user email"
+#     search_size = request.args['search_size']
+#     skills = get_user_from_db(email=user)['skill']
+#     jobs = search_job_by_skills(skills, search_size)
+#     # return json.dumps(jobs, default=lambda o: o.__dict__)
+#     return json.dumps(jobs)
 
 
 @application.route('/search_job_by_kw')
