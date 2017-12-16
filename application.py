@@ -9,6 +9,10 @@ from flask_cors import CORS
 application = Flask(__name__)
 CORS(application)
 
+import re
+
+EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+
 
 @application.route('/')
 def hello_world():
@@ -49,6 +53,8 @@ def fun_get_city():
 @application.route('/get_city_list_by_preference')
 def fun_get_city_list():
     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+    if not EMAIL_REGEX.match(user):
+        return "Error: wrong format of user email"
     search_size = request.args['search_size']
 
     preferences = user.preferences
@@ -59,8 +65,6 @@ def fun_get_city_list():
 @application.route('/search_job_by_skills')
 def fun_get_job_list_by_skills():
     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-    import re
-    EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
     if not EMAIL_REGEX.match(user):
         return "Error: wrong format of user email"
     search_size = request.args['search_size']

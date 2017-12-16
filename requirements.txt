@@ -1,4 +1,4 @@
--asn1crypto==0.24.0
+ls-asn1crypto==0.24.0
  -aws==0.2.5
  -awsebcli==3.12.1
  -bcrypt==3.1.4
