@@ -21,8 +21,9 @@ def login_user():
     name = request.args['name']
     user = get_user_from_db(email)
 
-    if user is None:
-        user = User(email, name)
+    if len(user) == 0:
+        user['email'] = email
+        user['name'] = name
         store_user(user)
 
     # return json.dumps(user, default=lambda o: o.__dict__)
