@@ -69,12 +69,20 @@ def fun_get_job_list_by_skills():
     return json.dumps(jobs)
 
 
+@application.route('/search_job_by_kw')
+def fun_get_job_by_kw():
+    kw = request.args.get('kw').split(' ')
+    size = 100
+    print(kw)
+    jobs = search_job_by_keywords(kw, size)
+    return json.dumps(jobs)
+
+
 @application.route('/search_job_by_city')
 def fun_get_job_list_by_city():
     city_name = request.args['city_name']
-    search_size = request.args['search_size']
+    search_size = 100
     jobs = search_job_by_city(city_name, search_size)
-    # return json.dumps(jobs, default=lambda o: o.__dict__)
     return json.dumps(jobs)
 
 
