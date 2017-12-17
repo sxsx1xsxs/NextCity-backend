@@ -1,13 +1,15 @@
 import pymysql
 import json
 
-def db_conn(): #ZJ
+
+def db_conn():  # ZJ
     return pymysql.connect(host="cc-nextcity.c3roxefgeyor.us-west-2.rds.amazonaws.com",
-                         port=3306,
-                         user="root",
-                         passwd="rootroot",
-                         db="nextcity",
+                           port=3306,
+                           user="root",
+                           passwd="rootroot",
+                           db="nextcity",
                            )
+
 
 def get_fields_name(cursor):
     """
@@ -16,14 +18,15 @@ def get_fields_name(cursor):
     """
     return [i[0] for i in cursor.description]
 
-def db_conqyy(): #QYY
+
+def db_conqyy():  # QYY
     return pymysql.connect(host="cc-nextcity.c3roxefgeyor.us-west-2.rds.amazonaws.com",
                            port=3306,
                            user="root",
                            passwd="rootroot",
                            db="nextcity",
-                            charset='utf8mb4',
-                            cursorclass=pymysql.cursors.DictCursor,
+                           charset='utf8mb4',
+                           cursorclass=pymysql.cursors.DictCursor,
                            )
 
 
@@ -40,6 +43,7 @@ def get_user_except(email, size=100):
         print("Error: unable to fetch data")
         db.close()
 
+
 def get_user_from_db(email):  # YKM
     """
     :param email:
@@ -54,6 +58,9 @@ def get_user_from_db(email):  # YKM
     try:
         cursor.execute(sql, email)
         user = cursor.fetchall()[0]
+        for field in ["skill", "other_pref", "main_pref"]:
+            tmp = list(user[field].strip().split(','))
+            user[field] = list(map(lambda x: x.strip(), tmp))
         db.close()
         return user
     except:
@@ -76,7 +83,8 @@ def get_user_from_db(email):  # YKM
     #     db.close()
     #     print('Error: unable to fetch data')
 
-def store_user(user): # QYY
+
+def store_user(user):  # QYY
 
     """
     :param user:
@@ -97,7 +105,9 @@ def store_user(user): # QYY
     user['address'] = None if not 'address' in user else user['address']
 
     try:
-        cursor.execute(sql, (user["name"], user["skill"], user["main_pref"], user["other_pref"], user["email"], user["password"], user["address"]))
+        cursor.execute(sql, (
+        user["name"], user["skill"], user["main_pref"], user["other_pref"], user["email"], user["password"],
+        user["address"]))
         db.commit()
         db.close()
         return True
@@ -106,7 +116,8 @@ def store_user(user): # QYY
         db.close()
         return False
 
-def get_city(city_name): # ZJ
+
+def get_city(city_name):  # ZJ
     # from city import City
     # city = City("Chicago")
     db = db_conn()
@@ -166,8 +177,7 @@ def get_all_jobs(size=100):
         print("Error: unable to fetch data")
 
 
-
-def search_job_by_city(city_name, size = 100): #QYY
+def search_job_by_city(city_name, size=100):  # QYY
     """
     :param city_name: String
     :param size: int
@@ -217,7 +227,7 @@ def search_job_by_skills(skills, size=100):
     return result[:size]
 
 
-def search_job_by_keywords(keywords, size=100): #ZJ
+def search_job_by_keywords(keywords, size=100):  # ZJ
     """
     :param keywords: String[]
     :param size: int
@@ -241,7 +251,8 @@ def search_job_by_keywords(keywords, size=100): #ZJ
         db.close()
         print("Error: unable to fetch data")
 
-def store_userfavorjob(email, jobid): # QYY
+
+def store_userfavorjob(email, jobid):  # QYY
     """
     :param email: String
     :param jobid: int
@@ -260,7 +271,8 @@ def store_userfavorjob(email, jobid): # QYY
         print("Error: unable to store data")
         return False
 
-def get_userfavorjobs(email): #QYY
+
+def get_userfavorjobs(email):  # QYY
     """
     :param email: String
     :return: a list of job maps of this user
@@ -296,10 +308,12 @@ def get_userfavorjobs(email): #QYY
         print("unable to fetch data")
         db.close()
 
+
 # Test
 def main():
     # store_user({'email' : 'zhijian.jiang@foxmail.com'})
     print(get_user_from_db('zhijian.jiang95@hotmail.com'))
+
 
 if __name__ == '__main__':
     main()
@@ -307,5 +321,3 @@ if __name__ == '__main__':
 
     # user = {"name": "qyy", "skill": "a,b,c", "main_pref": "e,g,h", "other_pref": "sf,d", "email": "KLJF", "password": "safe", "address": "203"}
     # print(store_user(user))
-
-
