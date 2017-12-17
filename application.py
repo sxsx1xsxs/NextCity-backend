@@ -140,7 +140,6 @@ def fun_get_all_jobs():
 def fun_get_job_by_kw():
     kw = request.args.get('kw').split(' ')
     size = 100
-    print(kw)
     jobs = search_job_by_keywords(kw, size)
     return json.dumps(jobs)
 
@@ -151,6 +150,12 @@ def fun_get_job_list_by_city():
     search_size = 100
     jobs = search_job_by_city(city_name, search_size)
     return json.dumps(jobs)
+
+
+@application.route('/get_favorite_job')
+def fun_get_favorite_job():
+    email = request.args['email']
+    return json.dumps(get_userfavorjobs(email))
 
 
 # run the app.
