@@ -28,7 +28,6 @@ def db_conqyy(): #QYY
 
 
 def get_user_except(email, size=100):
-    result = []
     db = db_conqyy()
     cursor = db.cursor()
     sql = "select * from user where email != %s"
@@ -38,7 +37,7 @@ def get_user_except(email, size=100):
         db.close()
         return jobs[:size]
     except:
-        return "Error: unable to fetch data"
+        print("Error: unable to fetch data")
         db.close()
 
 def get_user_from_db(email):  # YKM
@@ -65,20 +64,28 @@ def get_user_from_db(email):  # YKM
         return user
     except:
         db.close()
-        return 'Error: unable to fetch data'
-
-
-
+        print('Error: unable to fetch data')
 
 def store_user(user): # QYY
+
     """
     :param user:
     :return: True if successfully stored the user, false otherwise
     """
+
     # user is a dict mapping name, skill, main_pref, other_pref, email, password
-    db = db_conqyy()
+    db = db_conn()
     cursor = db.cursor()
     sql = "insert into user (name, skill, main_pref, other_pref, email, password, address) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+
+    user['name'] = None if not 'name' in user else user['name']
+    user['skill'] = None if not 'skill' in user else user['skill']
+    user['main_pref'] = None if not 'main_pref' in user else user['main_pref']
+    user['other_pref'] = None if not 'other_pref' in user else user['other_pref']
+    user['email'] = None if not 'email' in user else user['email']
+    user['password'] = None if not 'password' in user else user['password']
+    user['address'] = None if not 'address' in user else user['address']
+
     try:
         cursor.execute(sql, (user["name"], user["skill"], user["main_pref"], user["other_pref"], user["email"], user["password"], user["address"]))
         db.commit()
@@ -104,10 +111,10 @@ def get_city(city_name): # ZJ
         for i in range(len(row)):
             city[fields_name[i]] = row[i] if not row[i] == None else 0
         db.close()
+        return city
     except:
-        return 'Error: unable to fetch data'
+        print('Error: unable to fetch data')
         db.close()
-    return city
 
 
 def search_city_by_preferences(preferences, size):
@@ -129,7 +136,7 @@ def search_city_by_preferences(preferences, size):
         return result[:size]
     except:
         db.close()
-        return "Error: unable to fetch data"
+        print("Error: unable to fetch data")
 
 
 def get_all_jobs(size=100):
@@ -146,7 +153,7 @@ def get_all_jobs(size=100):
         return result[:size]
     except:
         db.close()
-        return "Error: unable to fetch data"
+        print("Error: unable to fetch data")
 
 
 
@@ -174,7 +181,7 @@ def search_job_by_city(city_name, size = 100): #QYY
         return result
     except:
         db.close()
-        return "Error: unable to fetch data"
+        print("Error: unable to fetch data")
 
 
 def search_job_by_skills(skills, size=100):
@@ -219,14 +226,15 @@ def search_job_by_keywords(keywords, size=100): #ZJ
         for job in jobs:
             result.append(job)
         db.close()
+        return result[:size]
     except:
         db.close()
-        return "Error: unable to fetch data"
-    return result[:size]
+        print("Error: unable to fetch data")
 
 # Test
 def main():
-    print(get_user_except('zhijian.jiang@gmail.com', size=100))
+    store_user({'email' : 'zhijian.jiang@foxmail.com'})
+    print(get_user_from_db('Yerbury.Edouard@gmail.com'))
 
 if __name__ == '__main__':
     main()

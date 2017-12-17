@@ -24,11 +24,10 @@ def fun_get_user():
     email = request.args['email']
     name = request.args['name']
     user = get_user_from_db(email)
-
-    if len(user) == 0:
-        user['email'] = email
-        user['name'] = name
-        store_user(user)
+    # if len(user) == 0:
+    #     user['email'] = email
+    #     user['name'] = name
+    #     store_user(user)
     return json.dumps(user)
 
 @application.route('/save_user', methods=['POST'])
@@ -38,16 +37,39 @@ def save_user():
     # print(user.name)
     return "success saving " + request.args['user']
 
+@application.route('/signup_user', methods=['POST'])
+def fun_signup_user():
+    # check email and password
+    if not ('email' in request.form and 'password' in request.form):
+        print("Error: empty email or password")
+        return json.dumps(False)
+    email = request.form['email']
+    if not EMAIL_REGEX.match(email):
+        print("Error: wrong format of user email")
+        return json.dumps(False)
+    if get_user_from_db(email) != None:
+        print('Error: this email exists')
+        return json.dumps(False)
+
+    password = request.form['password']
+    name = request.form['name'] if 'name' in request.form else None
+    try:
+        store_user({'email':email, 'password':password, 'name':name})
+        return json.dumps(True)
+    except:
+        return json.dumps(False)
+
 @application.route('/login_user', methods=['POST'])
 def fun_login_user():
     email = request.form['email']
     if not EMAIL_REGEX.match(email):
         return "Error: wrong format of user email"
     password = request.form['password']
-    if password == get_user_from_db(email)['password']:
-        return json.dumps(True)
-    else:
+    user = get_user_from_db(email)
+    if user == None or password != user['password']:
         return json.dumps(False)
+    else:
+        return json.dumps(user)
 
 @application.route('/get_city')
 def fun_get_city():
