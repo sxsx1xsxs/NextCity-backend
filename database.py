@@ -33,9 +33,9 @@ def get_user_except(email, size=100):
     sql = "select * from user where email != %s"
     try:
         cursor.execute(sql, email)
-        jobs = cursor.fetchall()
+        users = cursor.fetchall()
         db.close()
-        return jobs[:size]
+        return users[:size]
     except:
         print("Error: unable to fetch data")
         db.close()
@@ -46,25 +46,35 @@ def get_user_from_db(email):  # YKM
     :return: if the user with the email exists in the database, return the user.
     Otherwise return null
     """
-    db = db_conn()
+    db = db_conqyy()
+    # cursor = db.cursor()
+    # sql = "select * from user where email = %s"
     cursor = db.cursor()
     sql = "select * from user where email = %s"
-    user = {}
     try:
         cursor.execute(sql, email)
-        fields_name = get_fields_name(cursor)
-        results = cursor.fetchall()
-        row = results[0]
-        for i in range(len(row)):
-            user[fields_name[i]] = row[i]
-        for field in ["skill", "other_pref", "main_pref"]:
-            tmp = list(user[field].strip().split(','))
-            user[field] = list(map(lambda x: x.strip(), tmp))
+        user = cursor.fetchall()[0]
         db.close()
         return user
     except:
+        print("Error: unable to fetch data")
         db.close()
-        print('Error: unable to fetch data')
+    # user = {}
+    # try:
+    #     cursor.execute(sql, email)
+    #     # fields_name = get_fields_name(cursor)
+    #     results = cursor.fetchall()
+    #     row = results[0]
+    #     for i in range(len(row)):
+    #         user[fields_name[i]] = row[i]
+    #     for field in ["skill", "other_pref", "main_pref"]:
+    #         tmp = list(user[field].strip().split(','))
+    #         user[field] = list(map(lambda x: x.strip(), tmp))
+    #     db.close()
+    #     return user
+    # except:
+    #     db.close()
+    #     print('Error: unable to fetch data')
 
 def store_user(user): # QYY
 
@@ -288,8 +298,8 @@ def get_userfavorjobs(email): #QYY
 
 # Test
 def main():
-    store_user({'email' : 'zhijian.jiang@foxmail.com'})
-    print(get_user_from_db('Yerbury.Edouard@gmail.com'))
+    # store_user({'email' : 'zhijian.jiang@foxmail.com'})
+    print(get_user_from_db('zhijian.jiang95@hotmail.com'))
 
 if __name__ == '__main__':
     main()
