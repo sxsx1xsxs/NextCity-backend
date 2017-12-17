@@ -158,6 +158,14 @@ def fun_get_favorite_job():
     return json.dumps(get_userfavorjobs(email))
 
 
+@application.route('/set_favorite_job', methods=['GET'])
+def fun_set_favorite_job():
+    email = request.args['email']
+    job_id = request.args['job_id']
+    store_userfavorjob(email, job_id)
+    return "success"
+
+
 # run the app.
 if __name__ == "__main__":
     # Setting debug to True enables debug output. This line should be

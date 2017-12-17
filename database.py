@@ -293,13 +293,10 @@ def get_userfavorjobs(email):  # QYY
     try:
         cursor.execute(sql1, email)
         jobids = cursor.fetchall()
-        print(jobids)
         jobidslist = []
         for jobidmap in jobids:
             jobid = jobidmap["jobid"]
-            print(jobid)
             jobidslist.append(jobid)
-        print(jobidslist)
         result = []
         for jobid in jobidslist:
             cursor.execute(sql2, jobid)
