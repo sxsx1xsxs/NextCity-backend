@@ -20,7 +20,7 @@ def hello_world():
 
 
 @application.route('/get_user')
-def login_user():
+def fun_get_user():
     email = request.args['email']
     name = request.args['name']
     user = get_user_from_db(email)
@@ -31,7 +31,6 @@ def login_user():
         store_user(user)
     return json.dumps(user)
 
-
 @application.route('/save_user', methods=['POST'])
 def save_user():
     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
@@ -39,6 +38,16 @@ def save_user():
     # print(user.name)
     return "success saving " + request.args['user']
 
+@application.route('/login_user', methods=['POST'])
+def fun_login_user():
+    email = request.form['email']
+    if not EMAIL_REGEX.match(email):
+        return "Error: wrong format of user email"
+    password = request.form['password']
+    if password == get_user_from_db(email)['password']:
+        return json.dumps(True)
+    else:
+        return json.dumps(False)
 
 @application.route('/get_city')
 def fun_get_city():
