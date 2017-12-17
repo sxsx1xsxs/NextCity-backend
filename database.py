@@ -224,6 +224,61 @@ def search_job_by_keywords(keywords, size=100): #ZJ
         return "Error: unable to fetch data"
     return result[:size]
 
+def store_userfavorjob(email, jobid): # QYY
+    """
+    :param email: String
+    :param jobid: int
+    :return: Ture if succesful; False if failed
+    """
+    db = db_conqyy()
+    cursor = db.cursor()
+    sql = "insert into userfavorjob (email, jobid) VALUES (%s, %s)"
+    try:
+        cursor.execute(sql, (email, jobid))
+        db.commit()
+        db.close()
+        return True
+    except:
+        db.close()
+        print("Error: unable to store data")
+        return False
+
+def get_userfavorjobs(email): #QYY
+    """
+    :param email: String
+    :return: a list of job maps of this user
+    1. get the all the uer's favored jobid   put all jobids in a list
+    2. use the for loop to iterate the jobids list and find all corresponding jobs and put results in one list
+    """
+    db = db_conqyy()
+    cursor = db.cursor()
+    sql1 = "select jobid from userfavorjob where email = (%s)"
+    sql2 = "select * from job where id = (%s)"
+    try:
+        cursor.execute(sql1, email)
+        jobids = cursor.fetchall()
+        print(jobids)
+        jobidslist = []
+        for jobidmap in jobids:
+            jobid = jobidmap["jobid"]
+            print(jobid)
+            jobidslist.append(jobid)
+        print(jobidslist)
+        result = []
+        for jobid in jobidslist:
+            cursor.execute(sql2, jobid)
+            rows = cursor.fetchall()
+            # print(rows)
+            # print(type(rows))
+            result.append(rows[0])
+        # print(result)
+        # print(len(result))
+        db.close()
+        return result
+    except:
+        print("unable to fetch data")
+        db.close()
+
 # Test
 def main():
     print(get_user_except('zhijian.jiang@gmail.com', size=100))
