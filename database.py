@@ -59,8 +59,9 @@ def get_user_from_db(email):  # YKM
         cursor.execute(sql, email)
         user = cursor.fetchall()[0]
         for field in ["skill", "other_pref", "main_pref"]:
-            tmp = list(user[field].strip().split(','))
-            user[field] = list(map(lambda x: x.strip(), tmp))
+            if field in user and user[field] != None:
+                tmp = list(user[field].strip().split(','))
+                user[field] = list(map(lambda x: x.strip(), tmp))
         db.close()
         return user
     except:
@@ -96,6 +97,36 @@ def store_user(user):  # QYY
         print("Error: unable to store data")
         db.close()
         return False
+
+def update_user(user): # ZJ
+    """
+    :param user:
+    :return: user if successfully update the user, None otherwise
+    """
+    if (not 'email' in user) or (user['email'] == None) or (get_user_from_db(user['email']) == None):
+        return None
+
+    db = db_conn()
+    cursor = db.cursor()
+
+    properties = ('name', 'skill', 'main_pref', 'other_pref', 'email', 'password', 'address')
+    sql = "update user set name = %s, skill = %s, main_pref = %s, other_pref = %s, password = %s, address = %s " \
+          "WHERE email = %s"
+
+    for property in properties:
+        user[property] = None if not property in user else user[property]
+
+    try:
+        cursor.execute(sql, (
+            user["name"], user["skill"], user["main_pref"], user["other_pref"], user["password"],
+            user["address"], user["email"]))
+        db.commit()
+        db.close()
+        return user
+    except:
+        print("Error: unable to update data")
+        db.close()
+        return None
 
 
 def get_city(city_name):  # ZJ
@@ -284,7 +315,7 @@ def get_userfavorjobs(email):  # QYY
 # Test
 def main():
     # store_user({'email' : 'zhijian.jiang@foxmail.com'})
-    print(get_user_from_db('zhijian.jiang95@hotmail.com'))
+    print(update_user({'email' : 'zhijian.jiang@gmail.com', 'skill' : 'C++'}))
 
 
 if __name__ == '__main__':

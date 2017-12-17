@@ -22,20 +22,36 @@ def hello_world():
 @application.route('/get_user')
 def fun_get_user():
     email = request.args['email']
-    # name = request.args['name']
     user = get_user_from_db(email)
-    # if len(user) == 0:
-    #     user['email'] = email
-    #     user['name'] = name
-    #     store_user(user)
     return json.dumps(user)
 
 @application.route('/save_user', methods=['POST'])
 def save_user():
     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
     store_user(user)
-    # print(user.name)
     return "success saving " + request.args['user']
+
+@application.route('/update_user', methods=['POST'])
+def fun_update_user():
+
+    # check valid
+
+    user = json.loads(request.get_json())
+    if not 'email' in user:
+        print('Error: email is absent')
+        return json.dumps(False)
+    email = user['email']
+    if not EMAIL_REGEX.match(email):
+        print("Error: wrong format of user email")
+        return json.dumps(False)
+
+    # join preference
+    prefs = ('main_pref', 'other_pref', 'skill')
+    for pref in prefs:
+        if pref in user and user[pref] != None:
+            user[pref] = ','.join(user[pref])
+
+    return json.dumps(update_user(user))
 
 @application.route('/signup_user', methods=['POST'])
 def fun_signup_user():
@@ -75,7 +91,6 @@ def fun_login_user():
 def fun_get_city():
     city_name = request.args['city_name']
     city = get_city(city_name)
-    # return json.dumps(city, default=lambda o: o.__dict__)
     return json.dumps(city)
 
 
@@ -84,13 +99,9 @@ sample url: http://127.0.0.1:5000/get_city_list_by_preference?email=Alonzo.Ball@
 sample output: ["Oakland", "New York", "Honolulu", "Berkeley", "Queens", "San Francisco", "San Francisco", "Los Angeles", "New York" ...]
 there are duplicated in output
 '''
-
-
 @application.route('/get_city_list_by_preference')
 def fun_get_city_list():
-    # user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
     email = request.args['email']
-    # print(user)
     if not EMAIL_REGEX.match(email):
         return "Error: wrong format of user email"
     list_size = request.args['list_size']
@@ -99,8 +110,6 @@ def fun_get_city_list():
     other_users = get_user_except(email=email)
     import logic
     other_users = logic.get_total_similarity(user, other_users)
-    # city_list = search_city_by_preferences(preferences, search_size)
-    # return json.dumps(city_list, default=lambda o: o.__dict__)
     cities = [other_user['address'] for other_user in other_users]
     res = []
     seen = set([])
@@ -118,21 +127,8 @@ def fun_get_city_list():
 
 @application.route('/get_all_jobs')
 def fun_get_all_jobs():
-    # size = json.loads(request.args['size'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-    # jobs = get_all_jobs(size=size) if not size is None else get_all_jobs()
     return json.dumps(get_all_jobs())
 
-
-# @application.route('/search_job_by_skills')
-# def fun_get_job_list_by_skills():
-#     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-#     if not EMAIL_REGEX.match(user):
-#         return "Error: wrong format of user email"
-#     search_size = request.args['search_size']
-#     skills = get_user_from_db(email=user)['skill']
-#     jobs = search_job_by_skills(skills, search_size)
-#     # return json.dumps(jobs, default=lambda o: o.__dict__)
-#     return json.dumps(jobs)
 
 
 @application.route('/search_job_by_kw')
@@ -157,4 +153,5 @@ if __name__ == "__main__":
     # Setting debug to True enables debug output. This line should be
     # removed before deploying a production app.
     application.debug = True
-    application.run(host='0.0.0.0', port=8111)
+    # application.run(host='0.0.0.0', port=8111)
+    application.run(host='localhost', port=8111)
