@@ -22,7 +22,7 @@ def hello_world():
 @application.route('/get_user')
 def fun_get_user():
     email = request.args['email']
-    name = request.args['name']
+    # name = request.args['name']
     user = get_user_from_db(email)
     # if len(user) == 0:
     #     user['email'] = email
@@ -157,4 +157,4 @@ if __name__ == "__main__":
     # Setting debug to True enables debug output. This line should be
     # removed before deploying a production app.
     application.debug = True
-    application.run()
+    application.run(host='0.0.0.0', port=8111)
