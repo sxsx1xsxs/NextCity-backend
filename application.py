@@ -25,18 +25,19 @@ def fun_get_user():
     user = get_user_from_db(email)
     return json.dumps(user)
 
+
 @application.route('/save_user', methods=['POST'])
 def save_user():
     user = json.loads(request.args['user'], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
     store_user(user)
     return "success saving " + request.args['user']
 
+
 @application.route('/update_user', methods=['POST'])
 def fun_update_user():
-
     # check valid
 
-    user = json.loads(request.get_json())
+    user = request.get_json()
     if not 'email' in user:
         print('Error: email is absent')
         return json.dumps(False)
@@ -52,6 +53,7 @@ def fun_update_user():
             user[pref] = ','.join(user[pref])
 
     return json.dumps(update_user(user))
+
 
 @application.route('/signup_user', methods=['POST'])
 def fun_signup_user():
@@ -70,10 +72,11 @@ def fun_signup_user():
     password = request.form['password']
     name = request.form['name'] if 'name' in request.form else None
     try:
-        store_user({'email':email, 'password':password, 'name':name})
+        store_user({'email': email, 'password': password, 'name': name})
         return json.dumps(True)
     except:
         return json.dumps(False)
+
 
 @application.route('/login_user', methods=['POST'])
 def fun_login_user():
@@ -87,6 +90,7 @@ def fun_login_user():
     else:
         return json.dumps(user)
 
+
 @application.route('/get_city')
 def fun_get_city():
     city_name = request.args['city_name']
@@ -99,6 +103,8 @@ sample url: http://127.0.0.1:5000/get_city_list_by_preference?email=Alonzo.Ball@
 sample output: ["Oakland", "New York", "Honolulu", "Berkeley", "Queens", "San Francisco", "San Francisco", "Los Angeles", "New York" ...]
 there are duplicated in output
 '''
+
+
 @application.route('/get_city_list_by_preference')
 def fun_get_city_list():
     email = request.args['email']
@@ -128,7 +134,6 @@ def fun_get_city_list():
 @application.route('/get_all_jobs')
 def fun_get_all_jobs():
     return json.dumps(get_all_jobs())
-
 
 
 @application.route('/search_job_by_kw')
